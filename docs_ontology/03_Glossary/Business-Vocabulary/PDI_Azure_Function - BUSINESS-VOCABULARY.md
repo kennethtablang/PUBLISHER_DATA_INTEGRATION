@@ -1,8 +1,4 @@
-# Business Vocabulary / Glossary (Publisher Data Integration)
-
-This document defines key terms, objects, and paths used in the Publisher Data Integration (PDI) system. It is intended to help operations, support, and development teams understand the components and workflow.
-
----
+# PDI_Azure_Function
 
 ### Batch file (Batch)
 
@@ -10,53 +6,6 @@ This document defines key terms, objects, and paths used in the Publisher Data I
 **Meaning:** An uploaded package (zip) or a single Excel file that contains one or more document jobs for Publisher. The system registers a BatchID to track all entries in the package.  
 **Example:** `funds_upload_20250901.zip` or `invest_20250901_001.xlsx`  
 **Related objects:** `BatchID`, `processing/{filename}`, `archive/{name}`
-
----
-
-### PDIBatch
-
-**Source:** `Publisher_Data_Operations` (class used by PDI functions)  
-**Meaning:** Server-side object that creates/loads/manages batch metadata and status (e.g., Count, SetComplete, MarkEntryExtracted). Used for batch lifecycle management and notifications.
-
----
-
-### PDIStream
-
-**Source:** `Publisher_Data_Operations`  
-**Meaning:** Wrapper around a stream containing a blob's data plus file metadata. Passed into `Orchestration` for validation, transformation and import. Also contains helpers like `OnlyFileName` and `GetDefaultTemplateName`.
-
----
-
-### DataTransferObject (DTO)
-
-**Source:** `PDI_Azure_Function/DataTransferObjects.cs`  
-**Meaning:** Lightweight message payload placed on Azure queues to tell downstream services which file to process and include context such as `FileName`, `Batch_ID`, `Job_ID`, and `RetryCount`. DTOs are Base64-encoded JSON when placed on Azure queues.
-
-**Key fields**:
-
-- `FileName` — blob filename placed in `processing/` or `importing/`.
-- `Batch_ID` — batch identifier for grouped uploads.
-- `Job_ID` — job identifier used by Publisher import.
-- `RetryCount` — number of times pipeline retried this file.
-- `ErrorMessage` — textual error to include in notifications.
-- `NotificationEmailAddress` — optional override for who receives notifications.
-
----
-
-### Orchestration
-
-**Source:** `Publisher_Data_Operations/Orchestration.cs`  
-**Meaning:** Central import engine that validates, transforms and inserts file contents into Publisher. Main operations are:
-
-- `ProcessFile(PDIStream curStream, PDIStream templateStream, int retryCount, ILogger log)` — validate and stage file data.
-- `PublisherImport(int jobID, ILogger log)` — final import step for Publisher (called by `QueueImport`).
-
----
-
-### PDISendGrid / Notification
-
-**Source:** `Publisher_Data_Operations` wrappers used by the functions  
-**Meaning:** Notification utility that sends template-based emails on success or error to configured addresses (uses SMTP / SendGrid credentials from environment).
 
 ---
 
@@ -123,8 +72,6 @@ This document defines key terms, objects, and paths used in the Publisher Data I
 
 ---
 
----
-
 ### pdi_Publisher_Documents (table)
 
 **Source:** referenced in `DocumentProcessing.processDataStaging`  
@@ -180,49 +127,5 @@ This document defines key terms, objects, and paths used in the Publisher Data I
 ### Aspose.Cells (third-party)
 
 **Meaning:** Excel-processing library used to load template and uploaded workbooks (`Excel.Workbook`) for validation and to preserve workbook comments/errors when validation fails. Requires `Aspose.Total.lic` to be present.
-
----
-
----
-
-### pdi_Global_Text_Language
-
-**Source:** `Generic.searchGlobalScenarioText`, `loadMonths`  
-**Meaning:** Global lookup table for commonly used English/French phrases (month names, short/long forms, other standardized labels). Used for localized date and wording generation.
-
----
-
-### pdi_Client_Field_Content_Scenario_Language
-
-**Source:** `Generic.searchClientScenarioText`  
-**Meaning:** Client-specific scenario table mapping `Field_Name` + scenario flags to English/French content templates. Scenario-ranking logic picks the best match and drives scenario-based content generation.
-
----
-
-### pdi_Client_Translation_language
-
-**Source:** `Generic.searchClientFrenchText`  
-**Meaning:** Per-client table storing known English→French translations. Used for direct lookups; if a translation is missing, missing-French flow is triggered.
-
----
-
-### pdi_Client_Translation_Language_Missing_Log` / `pdi_Client_Translation_Language_Missing_Log_Details`
-
-**Source:** `Generic.AddMissingFrench`, `Generic.SaveFrench`  
-**Meaning:** Log tables that track missing French translations discovered during import/transform. The system accumulates missing entries and bulk-inserts them for BA/translation teams to act upon.
-
----
-
-### pdi_Publisher_Documents
-
-**Source:** `Generic.getPublisherDocumentFields`  
-**Meaning:** Publisher catalog table accessed to get document-level metadata (InceptionDate, FFDocAgeStatusID, IsProforma, Document names). `Generic` caches client-specific rows to serve field lookups used by transforms and FF business rules.
-
----
-
-### MissingFrench (in-memory)
-
-**Source:** `Generic.LoadMissingFrench` / `AddMissingFrench`  
-**Meaning:** In-memory representation of missing translation items, deduplicated via a UniqueConstraint then persisted via `SaveFrench()`.
 
 ---
