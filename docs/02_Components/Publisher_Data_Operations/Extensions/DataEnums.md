@@ -1,6 +1,6 @@
 # Extensions — DataEnums (analysis)
 
-**One-line purpose**
+## One-line purposes
 
 Defines core enumeration types that map to database reference tables and control data processing behavior throughout the PDI pipeline.
 
