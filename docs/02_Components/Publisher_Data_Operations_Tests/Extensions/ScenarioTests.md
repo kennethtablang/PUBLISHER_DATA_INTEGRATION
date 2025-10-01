@@ -172,7 +172,7 @@ Assert.Equal(result, expected);
 [InlineData("fieldName{value1, value2 , value3} & fieldName2 { value3, value4 }", "fieldName3 { value3, value4 }", "fieldName,fieldName2,fieldName3")]
 ```
 
-* **Two Scenarios:** 
+* **Two Scenarios:**
   * Scenario 1: `fieldName` and `fieldName2`
   * Scenario 2: `fieldName3`
 * **Distinct Collection:** Three unique field names across both scenarios
