@@ -64,7 +64,7 @@ Core library that validates, transforms and stages data from uploaded files into
   - `UpdateIfChanged(DataRow row, string column, object value)` — sets column value only if changed.
   - `SetFFDocAge(Dictionary<string,string> staging, DataRow matchedRow, DataTable pubDocs)` — complex business rule returning `FFDocAge?` for Fund Facts age status (brand new / new series / 12 months etc).
 
-**Business impact / notes**
+## Business impact / notes
 
 - This class is the canonical place for many domain rules: FFDocAge calculation, FFDocAge and IsActiveStatus updates, PerformanceReset decisions, and multiple field mappings. Business analysts should review `fieldList` and `SetFFDocAge` logic to confirm policy alignment.
 
@@ -278,7 +278,7 @@ Core library that validates, transforms and stages data from uploaded files into
   - `DataTable GetValidationMessages(string fileNameOrID)`  
     Returns `pdi_File_Validation_Log` rows for a file id or latest file with matching filename.
 
-**Business impact / notes**
+## Business impact / note
 
 - `Generic` centralizes translation and scenario logic — any change here affects how templates are built for STATIC content and how missing translations are captured.
 - The class uses in-memory DataTables cached per client/docType/lob to avoid repeated DB queries. For very large clients these caches may be heavy — see performance notes below.
