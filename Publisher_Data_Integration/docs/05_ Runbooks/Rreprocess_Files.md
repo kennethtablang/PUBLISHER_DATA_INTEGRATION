@@ -2,7 +2,7 @@
 
 **When to use:** a batch or file failed during validation, orchestration, or Publisher import and you need to re-run it. Use QA first to validate the steps.
 
-**Prerequisites**
+## Prerequisites
 
 - Ops access to Azure Storage (blob containers) and queue (PDI & PUB) or use Azure Storage Explorer.
 - Access to function logs (Application Insights or Function App logs).

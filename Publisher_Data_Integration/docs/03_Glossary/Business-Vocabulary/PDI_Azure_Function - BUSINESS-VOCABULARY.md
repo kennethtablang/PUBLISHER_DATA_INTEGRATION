@@ -1,6 +1,6 @@
 # PDI_Azure_Function
 
-### Batch file (Batch)
+## Batch file (Batch)
 
 **Source:** `PDI_Azure_Function/BatchBlob.cs`  
 **Meaning:** An uploaded package (zip) or a single Excel file that contains one or more document jobs for Publisher. The system registers a BatchID to track all entries in the package.  
